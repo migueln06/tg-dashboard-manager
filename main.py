@@ -183,19 +183,6 @@ cargarHistorial();
     </body>
     </html>
     """
-# @app.post("/enviar")
-# async def enviar_mensaje(mensaje: str = Form(...)):
-#     url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
-#     payload = {
-#         "chat_id": CHAT_ID,
-#         "text": mensaje,
-#         "parse_mode": "HTML"
-#     }
-#     response = requests.post(url, json=payload)
-#     if response.status_code == 200:
-#         return {"status": "success", "detalle": "Mensaje enviado exitosamente"}
-#     else:
-#         return {"status": "error", "detalle": "Error al enviar el mensaje"}
 
 @app.get("/historial")
 async def obtener_historial():
@@ -265,34 +252,6 @@ async def enviar_mensaje(
     except Exception as e:
         return {"status": "error", "detalle": str(e)}
 
-        # Verificamos si response existe antes de devolverlo
-    #     if response:
-    #         return {"status": "ok" if response.ok else "error", "detalle": response.text}
-    #     else:
-    #         return {"status": "error", "detalle": "No se generó respuesta"}
-
-    # except Exception as e:
-    #     return {"status": "error", "detalle": str(e)}
-    
-    if response and response.ok:
-            # Definimos el tipo
-            tipo_msg = "Foto" if (foto and foto.filename) else "Texto"
-            
-            # Intentamos guardar, pero que un error aquí no rompa la respuesta
-            try:
-                with sqlite3.connect("historial.db") as conn:
-                    cursor = conn.cursor()
-                    cursor.execute(
-                        "INSERT INTO publicaciones (mensaje, tipo, estado) VALUES (?, ?, ?)",
-                        (mensaje, tipo_msg, "Enviado")
-                    )
-                    conn.commit()
-                print("DB: Guardado exitoso")
-            except Exception as e_db:
-                print(f"DB Error (No crítico): {e_db}")
-
-            # IMPORTANTE: Esta línea DEBE ejecutarse sí o sí
-            return {"status": "ok", "detalle": "Enviado correctamente"}
     
     
 
